@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 )
 
 func main() {
-	// task1
+	// task1 (jika ingin menjalankan maka hilangkan coment)
 	// deret := Deret{Limit: 40}
 
 	// var wg sync.WaitGroup // harus di matikan jika salah satu acctive
@@ -33,17 +34,42 @@ func main() {
 
 	// wg.Wait()
 
-	// task2
+	// task2 (jika ingin menjalankan maka hilangkan coment)
 
 	// GanjilGenap(40)
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 
-	ch := make(chan int, 10)
+	// ch := make(chan int, 10)
 
-	wg.Add(1)
-	go GanjilGenap(40, &wg, ch)
+	// wg.Add(1)
+	// go GanjilGenap(40, &wg, ch)
 
-	wg.Wait()
-	close(ch)
+	// wg.Wait()
+	// close(ch)
+
+	// task 3
+
+	var workingDays = make([]string, 0)
+	var mu sync.Mutex
+	var wg sync.WaitGroup // harus di matikan jika salah satu
+
+	ch := make(chan string)
+
+	processDays(ch)
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	for result := range ch {
+		mu.Lock()
+		workingDays = append(workingDays, result)
+		mu.Unlock()
+	}
+
+	// Menampilkan semua data hari
+	fmt.Println("Semua Hari:", days)
+	fmt.Println("Hari Kerja:", workingDays)
 
 }
